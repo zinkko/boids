@@ -21,3 +21,9 @@ export const dAngle = (a1: number, a2: number) => {
 export const mod = (a: number, m: number) => {
     return ((a % m) + m) % m;
 }
+
+export const distance = (p1: Point, p2: Point) => {
+    const dx = Math.abs(p1.x - p2.x);
+    const dy = Math.abs(p1.y - p2.y);
+    return Math.hypot(dx, dy);
+}

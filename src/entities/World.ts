@@ -1,4 +1,4 @@
-import { mod } from './geometry';
+import { mod, distance, Point } from './geometry';
 import Boid from './Boid';
 
 export default class World {
@@ -12,8 +12,21 @@ export default class World {
         this.boids = [];
     }
 
-    public addBoid() {
-        this.boids.push(new Boid(this));
+    public addBoid(startPosition?: Point) {
+        const boid = new Boid(this);
+        if (startPosition) {
+            boid.pos = startPosition;
+        }
+        this.boids.push(boid);
+    }
+
+    public boidsWithinVision(boid: Boid) {
+        return this.boids.filter(b => {
+            if (b === boid) {
+                return false;
+            }
+            return distance(boid.pos, b.pos) <= boid.visionRadius;
+        });
     }
 
     public simulateWorld = (deltaT: number) => {
@@ -26,6 +39,26 @@ export default class World {
             boid.pos.y = Math.min(Math.max(boid.pos.y, 0), this.height);// mod(boid.pos.y, boid.height);
         });
     };
+
+    public hilightVision = (ctx: CanvasRenderingContext2D) => {
+        if (this.boids.length < 1) {
+            return;
+        }
+        const main = this.boids[0];
+        const inVision = this.boidsWithinVision(main);
+        ctx.beginPath();
+        ctx.strokeStyle = 'red';
+        ctx.arc(main.pos.x, main.pos.y, 5, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.strokeStyle = 'green';
+        inVision.forEach(other => {
+            ctx.moveTo(other.pos.x + 5, other.pos.y);
+            ctx.arc(other.pos.x, other.pos.y, 5, 0, Math.PI * 2);
+        })
+        ctx.stroke();
+    }
 
     public hilightNearestWall = (ctx: CanvasRenderingContext2D) => {
         if (this.boids.length < 1) {
@@ -49,12 +82,16 @@ export default class World {
 
     public draw = (ctx: CanvasRenderingContext2D, deltaT: number) => {
         ctx.clearRect(0, 0, this.width, this.height);
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, this.width, this.height);
+        ctx.fillStyle = 'black';
 
         this.boids.forEach(boid => {
             boid.draw(ctx);
         });
         
         this.hilightNearestWall(ctx);
+        this.hilightVision(ctx);
     };
 
     public nearestWall = (boid: Boid): [Wall, number] => {

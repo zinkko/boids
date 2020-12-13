@@ -8,22 +8,46 @@ export default class Boid {
     public direction: number;
     public pos: Point;
     private world: World;
+    public visionRadius: number;
 
     constructor(world: World) {
         this.size = 10;
-        this.speed = 0.1;
+        this.speed = 0.05;
         this.turnSpeed = -0.1;
         this.direction = Math.PI * 0.2;
         this.pos = { x: 100, y: 100 };
         this.world = world;
+        this.visionRadius = this.size * 7;
     }
     public ai() {
+        // boid actions
+        this.separate();
+        this.align();
+        this.cohere();
+
+        // own actions
+        this.avoidWall();
+    }
+
+    private avoidWall() {
         const [wall, d] = this.world.nearestWall(this);
         const wallDirection = walls[wall];
         
         if (d < 5 * this.size && dAngle(this.direction, wallDirection) < Math.PI/2) {
             this.direction += this.turnSpeed * this.awayFrom(wallDirection);
         }
+    }
+
+    private separate() {
+
+    }
+
+    private align() {
+
+    }
+
+    private cohere() {
+
     }
 
     private awayFrom(angle: number) {
@@ -49,5 +73,12 @@ export default class Boid {
         ctx.lineTo(tail2.x, tail2.y);
         ctx.lineTo(nose.x, nose.y);
         ctx.fill();
+
+        ctx.beginPath();
+        ctx.strokeStyle = 'orange';
+        ctx.moveTo(this.pos.x+this.visionRadius, this.pos.y);
+        ctx.arc(this.pos.x, this.pos.y, this.visionRadius, 0, Math.PI*2);
+        ctx.stroke();
+        ctx.strokeStyle = 'black';
     };
 };

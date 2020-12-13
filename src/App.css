@@ -24,12 +24,17 @@
 .Simulation {
   grid-row: 1;
   grid-column: 1;
+  background-color: ghostwhite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .Controls {
   grid-row: 1;
   grid-column: 2;
-  background-color: gainsboro;
+  background-color: ghostwhite;
+  border-left: 2px solid black;
 
   display: flex;
   align-items: center;

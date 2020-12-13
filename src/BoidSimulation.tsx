@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react";
 import World from "./entities/World";
-import Boid from "./entities/Boid";
 
 const world = new World();
 world.addBoid();
+world.addBoid({ x: 10, y: 174 });
+world.addBoid({ x: 314, y: 15 });
 
 export default function BoidSimulation() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null); 
@@ -35,7 +36,6 @@ export default function BoidSimulation() {
                 id="world"
                 width={world.width}
                 height={world.height}
-                style={{ border: '1px dashed black' }}
             />
         </div>
     );
