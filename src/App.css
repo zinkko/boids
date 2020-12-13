@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+.App {
+  margin: 0 16px;
+  font-family: 'Quicksand', sans-serif;
+  display: grid;
+  grid-template-rows: 1fr 7fr;
+}
+
+.Header {
+  border-bottom: solid 3px blue;
+  grid-row: 1;
+  grid-column: 1;
+}
+
+.Panel {
+  padding-top: 8px;
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  box-sizing: border-box;
+
+}
+
+.Simulation {
+  grid-row: 1;
+  grid-column: 1;
+}
+
+.Controls {
+  grid-row: 1;
+  grid-column: 2;
+  background-color: gainsboro;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
