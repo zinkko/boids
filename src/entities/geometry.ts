@@ -8,8 +8,8 @@ export class DirectionVector {
     public x: number;
     public y: number;
     constructor(x: number, y: number) {
-        this.x = x;
-        this.y = y;
+        this.x = x / Math.hypot(x, y);
+        this.y = y / Math.hypot(x, y);
     }
     public turn(a: number): DirectionVector {
         return new DirectionVector(
@@ -21,7 +21,10 @@ export class DirectionVector {
         return new DirectionVector(-this.x, -this.y);
     }
     public angle(): number {
-        return (Math.sign(this.x) || -Math.sign(this.y)) * Math.acos(this.x);
+        if (this.y < 0) {
+            return -Math.acos(this.x);
+        }
+        return Math.acos(this.x);
     }
 }
 
@@ -56,3 +59,18 @@ export const distance = (p1: Point, p2: Point) => {
     const dy = Math.abs(p1.y - p2.y);
     return Math.hypot(dx, dy);
 }
+
+export const centerOfMass = (points: Point[]): Point => ({
+    x: points.map(p => p.x).reduce(add) / points.length,
+    y: points.map(p => p.y).reduce(add) / points.length,
+});
+
+export const averageOfDirections = (ds: DirectionVector[]): DirectionVector => {
+    const { x, y } = centerOfMass(ds);
+    if (x === 0 && y === 0) {
+        return new DirectionVector(1, 0);
+    }
+    return new DirectionVector(x, y);
+};
+
+const add = (a: number, b: number) => a + b;

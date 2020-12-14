@@ -2,9 +2,16 @@ import { useEffect, useRef } from "react";
 import World from "./entities/World";
 
 const world = new World();
-world.addBoid();
-world.addBoid({ x: 10, y: 174 });
-world.addBoid({ x: 314, y: 15 });
+const n = 40;
+const pad = 20;
+for (let i=0; i < n; i++) {
+    world.addBoid({
+        x: Math.random()*(world.width -2*pad) + pad,
+        y: Math.random()*(world.height-2*pad) + pad,
+    });
+}
+
+
 
 export default function BoidSimulation() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null); 

@@ -1,4 +1,4 @@
-import { distance, Point, DirectionVector } from './geometry';
+import { distance, Point, DirectionVector, mod, centerOfMass } from './geometry';
 import Boid from './Boid';
 
 export default class World {
@@ -35,10 +35,20 @@ export default class World {
 
             boid.pos.x += deltaT * boid.speed * boid.direction.x;
             boid.pos.y += deltaT * boid.speed * boid.direction.y;
-            boid.pos.x = Math.min(Math.max(boid.pos.x, 0), this.width); // mod(boid.pos.x, boid.width);
-            boid.pos.y = Math.min(Math.max(boid.pos.y, 0), this.height);// mod(boid.pos.y, boid.height);
+
+            this.simulatePortalWalls(boid);
         });
     };
+    
+    private simulatePortalWalls(boid: Boid) {
+        boid.pos.x = mod(boid.pos.x, this.width);
+        boid.pos.y = mod(boid.pos.y, this.height);
+    }
+    
+    private simulateSolidWalls(boid: Boid) {
+        boid.pos.x = Math.min(Math.max(boid.pos.x, 0), this.width); 
+        boid.pos.y = Math.min(Math.max(boid.pos.y, 0), this.height);
+    }
 
     public hilightVision = (ctx: CanvasRenderingContext2D) => {
         if (this.boids.length < 1) {
@@ -80,6 +90,24 @@ export default class World {
         ctx.strokeStyle = 'black';
     }
 
+    private hilightBoidCenterOfMass(ctx: CanvasRenderingContext2D) {
+        const com = centerOfMass(this.boids.map(b => b.pos));
+        ctx.beginPath();
+        ctx.arc(com.x, com.y, 5, 0, Math.PI * 2);
+        ctx.stroke();
+    }
+
+    private hilightAngles(ctx: CanvasRenderingContext2D) {
+        ctx.beginPath();
+        const r = 20; 
+        this.boids.forEach(({ pos:{ x, y }, direction }) => {
+            ctx.moveTo(x + r, y);
+            ctx.arc(x, y, r, 0, direction.angle());
+        });
+
+        ctx.stroke();
+    }
+
     public draw = (ctx: CanvasRenderingContext2D, deltaT: number) => {
         ctx.clearRect(0, 0, this.width, this.height);
         ctx.fillStyle = 'white';
@@ -90,8 +118,10 @@ export default class World {
             boid.draw(ctx);
         });
         
-        this.hilightNearestWall(ctx);
-        this.hilightVision(ctx);
+        // this.hilightNearestWall(ctx);
+        // this.hilightVision(ctx);
+        // this.hilightBoidCenterOfMass(ctx);
+        // this.hilightAngles(ctx);
     };
 
     public nearestWall = (boid: Boid): [Wall, number] => {

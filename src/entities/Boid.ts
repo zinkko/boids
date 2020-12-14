@@ -1,4 +1,4 @@
-import { Point, pointOnCircle, DirectionVector, directionFromAngle, angleBetween, mod } from './geometry';
+import { Point, pointOnCircle, DirectionVector, directionFromAngle, angleBetween, mod, centerOfMass, averageOfDirections, distance } from './geometry';
 import World, { walls } from './World';
 
 export default class Boid {
@@ -13,53 +13,75 @@ export default class Boid {
     constructor(world: World) {
         this.size = 10;
         this.speed = 0.05;
-        this.turnSpeed = -0.08;
-        this.direction = directionFromAngle(1);
+        this.turnSpeed = 0.05;
+        this.direction = directionFromAngle(Math.random() * Math.PI * 2);
         this.pos = { x: 100, y: 100 };
         this.world = world;
-        this.visionRadius = this.size * 7;
+        this.visionRadius = 120; //this.size * 7;
     }
     public ai() {
-        // boid actions
-        this.separate();
-        this.align();
-        this.cohere();
+        const targets: DirectionVector[] = [];
+        if (this.world.boidsWithinVision(this).length > 0) {
+            // boid actions
+            targets.push(this.separate());
+            targets.push(this.separate());
+            targets.push(this.align());
+            targets.push(this.cohere());
+        }
 
         // own actions
-        this.avoidWall();
+        targets.push(this.avoidWall());
+
+        if (targets.length > 0) {
+            this.steerToward(averageOfDirections(targets));
+        }
     }
 
     private avoidWall() {
         const [wall, d] = this.world.nearestWall(this);
         if (d <= this.visionRadius) {
             if (angleBetween(walls[wall], this.direction) < Math.PI / 2) {
-                this.steerAway(walls[wall]);
+                return walls[wall].opposite();
             }
         }
+        return this.direction;
     }
 
-    private separate() {
-
+    private separate(): DirectionVector {
+        const others = this.world.boidsWithinVision(this);
+        let closest = others[0];
+        let d = this.world.width * 10;
+        others.forEach(b => {
+            const nd = distance(this.pos, b.pos)
+            if (nd < d) {
+                d = nd;
+                closest = b;
+            }
+        })
+        return new DirectionVector(
+            this.pos.x - closest.pos.x,
+            this.pos.y - closest.pos.y
+        );
     }
 
-    private align() {
-
+    private align(): DirectionVector {
+        const boids = [this, ...this.world.boidsWithinVision(this)]
+        return averageOfDirections(boids.map(b => b.direction));
     }
 
-    private cohere() {
+    private cohere(): DirectionVector {
+        const boids = [this, ...this.world.boidsWithinVision(this)];
+        const com = centerOfMass(boids.map(b => b.pos));
 
+        return new DirectionVector(com.x - this.pos.x, com.y - this.pos.y);
     }
-
-    private steerAway(direction: DirectionVector) {
+    
+    private steerToward(direction: DirectionVector) {
         const ownAngle = this.direction.angle();
         const otherAngle = direction.angle();
         const refAngle = mod(ownAngle - otherAngle, Math.PI*2);
-        const clockwise = Math.sign(Math.PI - refAngle);
+        const clockwise = -Math.sign(Math.PI - refAngle);
         this.direction = this.direction.turn(clockwise * this.turnSpeed);
-    }
-
-    private steerToward(direction: DirectionVector) {
-        this.steerAway(direction.opposite());
     }
     
     public draw(ctx: CanvasRenderingContext2D) {
@@ -77,11 +99,11 @@ export default class Boid {
         ctx.lineTo(nose.x, nose.y);
         ctx.fill();
 
-        ctx.beginPath();
-        ctx.strokeStyle = 'orange';
-        ctx.moveTo(this.pos.x+this.visionRadius, this.pos.y);
-        ctx.arc(this.pos.x, this.pos.y, this.visionRadius, 0, Math.PI*2);
-        ctx.stroke();
-        ctx.strokeStyle = 'black';
+        // ctx.beginPath();
+        // ctx.strokeStyle = 'orange';
+        // ctx.moveTo(this.pos.x+this.visionRadius, this.pos.y);
+        // ctx.arc(this.pos.x, this.pos.y, this.visionRadius, 0, Math.PI*2);
+        // ctx.stroke();
+        // ctx.strokeStyle = 'black';
     };
 };
