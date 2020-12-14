@@ -1,4 +1,4 @@
-import { mod, distance, Point } from './geometry';
+import { distance, Point, DirectionVector } from './geometry';
 import Boid from './Boid';
 
 export default class World {
@@ -32,9 +32,9 @@ export default class World {
     public simulateWorld = (deltaT: number) => {
         this.boids.forEach(boid => {
             boid.ai();
-            boid.direction = mod(boid.direction, Math.PI * 2);
-            boid.pos.x += deltaT * boid.speed * Math.cos(boid.direction);
-            boid.pos.y += deltaT * boid.speed * Math.sin(boid.direction);
+
+            boid.pos.x += deltaT * boid.speed * boid.direction.x;
+            boid.pos.y += deltaT * boid.speed * boid.direction.y;
             boid.pos.x = Math.min(Math.max(boid.pos.x, 0), this.width); // mod(boid.pos.x, boid.width);
             boid.pos.y = Math.min(Math.max(boid.pos.y, 0), this.height);// mod(boid.pos.y, boid.height);
         });
@@ -115,10 +115,10 @@ export default class World {
 // walls
 
 export const walls = {
-    north: -Math.PI/2,
-    east: 0,
-    south: Math.PI/2,
-    west: -Math.PI,
+    north: new DirectionVector(0, -1),
+    south: new DirectionVector(0, 1),
+    east: new DirectionVector(1, 0),
+    west: new DirectionVector(-1, 0),
 };
 
 export type Wall = keyof typeof walls;

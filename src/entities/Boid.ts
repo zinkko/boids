@@ -1,11 +1,11 @@
-import { Point, pointOnCircle, dAngle } from './geometry';
+import { Point, pointOnCircle, DirectionVector, directionFromAngle, angleBetween, mod } from './geometry';
 import World, { walls } from './World';
 
 export default class Boid {
     public size: number;
     public speed: number;
     public turnSpeed: number;
-    public direction: number;
+    public direction: DirectionVector;
     public pos: Point;
     private world: World;
     public visionRadius: number;
@@ -13,8 +13,8 @@ export default class Boid {
     constructor(world: World) {
         this.size = 10;
         this.speed = 0.05;
-        this.turnSpeed = -0.1;
-        this.direction = Math.PI * 0.2;
+        this.turnSpeed = -0.08;
+        this.direction = directionFromAngle(1);
         this.pos = { x: 100, y: 100 };
         this.world = world;
         this.visionRadius = this.size * 7;
@@ -31,10 +31,10 @@ export default class Boid {
 
     private avoidWall() {
         const [wall, d] = this.world.nearestWall(this);
-        const wallDirection = walls[wall];
-        
-        if (d < 5 * this.size && dAngle(this.direction, wallDirection) < Math.PI/2) {
-            this.direction += this.turnSpeed * this.awayFrom(wallDirection);
+        if (d <= this.visionRadius) {
+            if (angleBetween(walls[wall], this.direction) < Math.PI / 2) {
+                this.steerAway(walls[wall]);
+            }
         }
     }
 
@@ -50,21 +50,24 @@ export default class Boid {
 
     }
 
-    private awayFrom(angle: number) {
-        const pos = angle + Math.PI/2;
-        const neg = angle - Math.PI/2;
-        return dAngle(this.direction, pos) < dAngle(this.direction, neg)
-        ? -1
-        : 1;
+    private steerAway(direction: DirectionVector) {
+        const ownAngle = this.direction.angle();
+        const otherAngle = direction.angle();
+        const refAngle = mod(ownAngle - otherAngle, Math.PI*2);
+        const clockwise = Math.sign(Math.PI - refAngle);
+        this.direction = this.direction.turn(clockwise * this.turnSpeed);
     }
 
+    private steerToward(direction: DirectionVector) {
+        this.steerAway(direction.opposite());
+    }
     
     public draw(ctx: CanvasRenderingContext2D) {
         const a = 0.8 * Math.PI;
         const nose = pointOnCircle(this.pos, this.size, this.direction);
-        const tail1 = pointOnCircle(this.pos, this.size, this.direction + a);
-        const tail2 = pointOnCircle(this.pos, this.size, this.direction - a);
-        const back = pointOnCircle(this.pos, 0.5*this.size, this.direction+Math.PI)
+        const tail1 = pointOnCircle(this.pos, this.size, this.direction.turn(a));
+        const tail2 = pointOnCircle(this.pos, this.size, this.direction.turn(-a));
+        const back = pointOnCircle(this.pos, 0.5*this.size, this.direction.opposite())
         
         ctx.beginPath();
         ctx.moveTo(nose.x, nose.y);
