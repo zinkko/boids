@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import World from "./entities/World";
-
+import { useEffect, useRef, useState } from 'react';
+import World from './entities/World';
+import { randomColor, randomDirection, randomPosition } from './utils/random';
 
 const createWorld = (): World => {
     const world = new World(800, 400);
@@ -8,17 +8,17 @@ const createWorld = (): World => {
     const pad = 20;
     for (let i=0; i < n; i++) {
         world.addBoid({
-            x: Math.random()*(world.width -2*pad) + pad,
-            y: Math.random()*(world.height-2*pad) + pad,
+            pos: randomPosition({ maxX: world.width - pad, minX: pad, maxY: world.height - pad, minY: pad }),
+            color: randomColor(240, 'lightness', { minLightness: 20, maxLightness: 70 }),
+            direction: randomDirection(),
         });
     }
     return world;
 }
 
-
-
 export default function BoidSimulation() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [world, _] = useState(createWorld());
 
     useEffect(() => {
@@ -37,7 +37,7 @@ export default function BoidSimulation() {
         if (ctx) {
             play(ctx);
         }
-    }, [canvasRef]);
+    }, [canvasRef, world]);
 
 
     return (

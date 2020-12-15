@@ -1,6 +1,18 @@
 
-import { Point, pointOnCircle, DirectionVector, directionFromAngle, angleBetween, mod, centerOfMass, averageOfDirections, distance } from './geometry';
+import { Point, pointOnCircle, DirectionVector, angleBetween, mod, centerOfMass, averageOfDirections, distance } from './geometry';
 import World, { walls } from './World';
+
+export interface BoidProperties {
+    size?: number;
+    speed?: number;
+    turnSpeed?: number;
+    direction?: DirectionVector;
+    pos?: Point;
+    world?: World;
+    visionRadius?: number;
+    color?: string;
+    crowdingDistance?: number;
+}
 
 export default class Boid {
     public size: number;
@@ -13,17 +25,16 @@ export default class Boid {
     private color: string;
     private crowdingDistance: number;
 
-    constructor(world: World) {
-        this.size = 5;
-        this.speed = 0.1;
-        this.turnSpeed = 0.05;
-        this.direction = directionFromAngle(Math.random() * Math.PI * 2);
-        this.pos = { x: 100, y: 100 };
+    constructor(world: World, properties?: BoidProperties) {
+        this.size = properties?.size || 5;
+        this.speed = properties?.speed || 0.1;
+        this.turnSpeed = properties?.turnSpeed || 0.05;
+        this.direction = properties?.direction || new DirectionVector(1, 0);
+        this.pos = properties?.pos || { x: 100, y: 100 };
         this.world = world;
-        this.visionRadius = this.size * 20;
-        this.crowdingDistance = this.visionRadius / 3;
-        const blue = Math.random() * 126 + 100;
-        this.color = `rgb(80, 50, ${blue})`;
+        this.visionRadius = properties?.visionRadius || this.size * 20;
+        this.crowdingDistance = properties?.crowdingDistance || this.size * 5;
+        this.color = properties?.color || 'black';
     }
     public ai() {
         const targets: DirectionVector[] = [];

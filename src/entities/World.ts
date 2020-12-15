@@ -1,5 +1,5 @@
-import { distance, Point, DirectionVector, mod, centerOfMass } from './geometry';
-import Boid from './Boid';
+import { distance, DirectionVector, mod, centerOfMass } from './geometry';
+import Boid, { BoidProperties } from './Boid';
 
 export default class World {
     public width: number;
@@ -12,12 +12,8 @@ export default class World {
         this.boids = [];
     }
 
-    public addBoid(startPosition?: Point) {
-        const boid = new Boid(this);
-        if (startPosition) {
-            boid.pos = startPosition;
-        }
-        this.boids.push(boid);
+    public addBoid(properties: BoidProperties) {
+        this.boids.push(new Boid(this, properties));
     }
 
     public boidsWithinVision(boid: Boid) {
