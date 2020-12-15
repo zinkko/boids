@@ -1,3 +1,4 @@
+
 import { Point, pointOnCircle, DirectionVector, directionFromAngle, angleBetween, mod, centerOfMass, averageOfDirections, distance } from './geometry';
 import World, { walls } from './World';
 
@@ -10,30 +11,36 @@ export default class Boid {
     private world: World;
     public visionRadius: number;
     private color: string;
+    private crowdingDistance: number;
 
     constructor(world: World) {
-        this.size = 10;
-        this.speed = 0.05;
+        this.size = 5;
+        this.speed = 0.1;
         this.turnSpeed = 0.05;
         this.direction = directionFromAngle(Math.random() * Math.PI * 2);
         this.pos = { x: 100, y: 100 };
         this.world = world;
-        this.visionRadius = 120; //this.size * 7;
+        this.visionRadius = this.size * 20;
+        this.crowdingDistance = this.visionRadius / 3;
         const blue = Math.random() * 126 + 100;
         this.color = `rgb(80, 50, ${blue})`;
     }
     public ai() {
         const targets: DirectionVector[] = [];
+        const addTarget = (tgtF: () => DirectionVector | null, weight: number) => {
+            const tgt = tgtF();
+            if (tgt) {
+                for (let i=0; i<weight; i++) targets.push(tgt);
+            }
+        }
         if (this.world.boidsWithinVision(this).length > 0) {
             // boid actions
-            targets.push(this.separate());
-            targets.push(this.separate());
-            targets.push(this.align());
-            targets.push(this.cohere());
+            addTarget(this.separate.bind(this), 2);
+            addTarget(this.align.bind(this), 1);
+            addTarget(this.cohere.bind(this), 1);
         }
 
-        // own actions
-        targets.push(this.avoidWall());
+        // addTarget(this.avoidWall.bind(this), 2);
 
         if (targets.length > 0) {
             this.steerToward(averageOfDirections(targets));
@@ -50,8 +57,13 @@ export default class Boid {
         return this.direction;
     }
 
-    private separate(): DirectionVector {
-        const others = this.world.boidsWithinVision(this);
+    private separate(): DirectionVector | null {
+        const others = this.world.boidsWithinVision(this).filter(b => {
+            return distance(b.pos, this.pos) < this.crowdingDistance;
+        });
+        if (others.length === 0) {
+            return null;
+        }
         let closest = others[0];
         let d = this.world.width * 10;
         others.forEach(b => {
@@ -60,7 +72,7 @@ export default class Boid {
                 d = nd;
                 closest = b;
             }
-        })
+        });
         return new DirectionVector(
             this.pos.x - closest.pos.x,
             this.pos.y - closest.pos.y
@@ -92,8 +104,8 @@ export default class Boid {
         const nose = pointOnCircle(this.pos, this.size, this.direction);
         const tail1 = pointOnCircle(this.pos, this.size, this.direction.turn(a));
         const tail2 = pointOnCircle(this.pos, this.size, this.direction.turn(-a));
-        const back = pointOnCircle(this.pos, 0.5*this.size, this.direction.opposite())
-        
+        const back = pointOnCircle(this.pos, 0.5*this.size, this.direction.opposite());
+
         ctx.beginPath();
         ctx.fillStyle = this.color;
         ctx.moveTo(nose.x, nose.y);
@@ -103,11 +115,5 @@ export default class Boid {
         ctx.lineTo(nose.x, nose.y);
         ctx.fill();
 
-        // ctx.beginPath();
-        // ctx.strokeStyle = 'orange';
-        // ctx.moveTo(this.pos.x+this.visionRadius, this.pos.y);
-        // ctx.arc(this.pos.x, this.pos.y, this.visionRadius, 0, Math.PI*2);
-        // ctx.stroke();
-        // ctx.strokeStyle = 'black';
     };
 };

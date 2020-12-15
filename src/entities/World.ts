@@ -6,9 +6,9 @@ export default class World {
     public height: number;
     private boids: Boid[];
 
-    constructor() {
-        this.width = 500;
-        this.height = 400;
+    constructor(width?: number, height?: number) {
+        this.width = width || 500;
+        this.height = height || 400;
         this.boids = [];
     }
 
@@ -48,6 +48,14 @@ export default class World {
     private simulateSolidWalls(boid: Boid) {
         boid.pos.x = Math.min(Math.max(boid.pos.x, 0), this.width); 
         boid.pos.y = Math.min(Math.max(boid.pos.y, 0), this.height);
+    }
+
+    public hilightFoo = (ctx: CanvasRenderingContext2D, boid: Boid) => {
+        ctx.beginPath();
+        ctx.fillStyle = 'aliceblue';
+        ctx.moveTo(boid.pos.x+boid.visionRadius/2, boid.pos.y);
+        ctx.arc(boid.pos.x, boid.pos.y, boid.visionRadius/2, 0, Math.PI*2);
+        ctx.fill();
     }
 
     public hilightVision = (ctx: CanvasRenderingContext2D) => {
@@ -114,6 +122,9 @@ export default class World {
         ctx.fillRect(0, 0, this.width, this.height);
         ctx.fillStyle = 'black';
 
+        // this.boids.forEach(boid => {
+        //     this.hilightFoo(ctx, boid);
+        // });
         this.boids.forEach(boid => {
             boid.draw(ctx);
         });
