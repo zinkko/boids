@@ -9,6 +9,7 @@ export default class Boid {
     public pos: Point;
     private world: World;
     public visionRadius: number;
+    private color: string;
 
     constructor(world: World) {
         this.size = 10;
@@ -18,6 +19,8 @@ export default class Boid {
         this.pos = { x: 100, y: 100 };
         this.world = world;
         this.visionRadius = 120; //this.size * 7;
+        const blue = Math.random() * 126 + 100;
+        this.color = `rgb(80, 50, ${blue})`;
     }
     public ai() {
         const targets: DirectionVector[] = [];
@@ -92,6 +95,7 @@ export default class Boid {
         const back = pointOnCircle(this.pos, 0.5*this.size, this.direction.opposite())
         
         ctx.beginPath();
+        ctx.fillStyle = this.color;
         ctx.moveTo(nose.x, nose.y);
         ctx.lineTo(tail1.x, tail1.y);
         ctx.lineTo(back.x, back.y);
