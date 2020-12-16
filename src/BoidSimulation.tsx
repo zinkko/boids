@@ -23,20 +23,29 @@ const createWorld = (config: SimulationConfig): World => {
     return world;
 }
 
-export default function BoidSimulation() {
+export default function BoidSimulation({ config }: { config: SimulationConfig }) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [world, _] = useState(createWorld({ amountOfBoids: 80 }));
+    const [world, _] = useState(createWorld(config));
+
+    // hack
+    while (world.amountOfBoids() > config.amountOfBoids && config.amountOfBoids >= 0) {
+        world.removeBoid();
+    }
+    while (world.amountOfBoids() < config.amountOfBoids) {
+        world.addBoid(config.boidProperties || {});
+    }
 
     useEffect(() => {
+        let animationFrame: number | null = null;
         const play = (ctx: CanvasRenderingContext2D) => {
             let lastTick = performance.now();
             const renderLoop = (timestamp: number) => {
                 const deltaT = timestamp - lastTick;
                 lastTick = timestamp;
                 world.simulateWorld(deltaT);
-                world.draw(ctx, {});
-                requestAnimationFrame(renderLoop);
+                world.draw(ctx, config);
+                animationFrame = requestAnimationFrame(renderLoop);
             };
             renderLoop(lastTick);
         }
@@ -44,7 +53,12 @@ export default function BoidSimulation() {
         if (ctx) {
             play(ctx);
         }
-    }, [canvasRef, world]);
+        return () => {
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+            }
+        };
+    }, [canvasRef, world, config]);
 
 
     return (

@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import BoidSimulation from './BoidSimulation';
-import Controls from './Controls';
+import Controls from './controls/Controls';
 import './App.css';
 
 function Header() {
@@ -23,13 +23,19 @@ function Panel({ children }: PanelProps) {
   );
 }
 
+const defaultConfig = {
+  amountOfBoids: 80,
+}
+
 function App() {
+  const [config, setConfig] = useState(defaultConfig);
+
   return (
     <div className="App">
       <Header></Header>
       <Panel>
-        <BoidSimulation />
-        <Controls />
+        <BoidSimulation config={config} />
+        <Controls values={config} setValues={setConfig} />
       </Panel>
     </div>
   );

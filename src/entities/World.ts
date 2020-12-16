@@ -1,5 +1,6 @@
 import { distance, DirectionVector, mod, centerOfMass } from './geometry';
 import Boid, { BoidProperties } from './Boid';
+import { SimulationConfig } from '../BoidSimulation';
 
 export default class World {
     public width: number;
@@ -14,6 +15,14 @@ export default class World {
 
     public addBoid(properties: BoidProperties) {
         this.boids.push(new Boid(this, properties));
+    }
+
+    public removeBoid() {
+        this.boids = this.boids.slice(0, this.boids.length-1);
+    }
+
+    public amountOfBoids(): number {
+        return this.boids.length;
     }
 
     public boidsWithinVision(boid: Boid) {
