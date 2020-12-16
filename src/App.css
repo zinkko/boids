@@ -3,22 +3,22 @@
 .App {
   margin: 0 16px;
   font-family: 'Quicksand', sans-serif;
-  display: grid;
-  grid-template-rows: 1fr 7fr;
+  display: flex;
+  flex-direction: column;
+
+  height: 100vh;
 }
 
 .Header {
   border-bottom: solid 3px blue;
-  grid-row: 1;
-  grid-column: 1;
 }
 
 .Panel {
-  padding-top: 8px;
   display: grid;
   grid-template-columns: 3fr 1fr;
   box-sizing: border-box;
 
+  flex: 1;
 }
 
 .Simulation {
@@ -34,7 +34,6 @@
   grid-row: 1;
   grid-column: 2;
   background-color: ghostwhite;
-  border-left: 2px solid black;
 
   width: 100%;
 
