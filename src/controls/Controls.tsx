@@ -2,6 +2,7 @@ import { SimulationConfig } from "../BoidSimulation";
 import { BoidProperties } from "../entities/Boid";
 import InputField from "./InputField";
 import Slider from "./Slider";
+import DrawingOptions from './DrawingOptions'
 
 export interface ControlProps {
     values: SimulationConfig;
@@ -25,6 +26,21 @@ export default function Controls({ values, setValues }: ControlProps) {
                     setValue={newvalue => update('amountOfBoids', newvalue)}
                 />
             </InputField>
+            <InputField label="Boid Size">
+                <Slider
+                    unit="px"
+                    value={values.boidProperties?.size || 5}
+                    setValue={newvalue => update('size', newvalue)}
+                />
+            </InputField>
+
+            <InputField label="Drawing Options">
+                <DrawingOptions
+                    values={values}
+                    setValues={setValues}
+                />
+            </InputField>
         </div>
     );
 }
+

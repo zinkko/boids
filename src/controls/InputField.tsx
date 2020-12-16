@@ -11,7 +11,6 @@ export default function InputField({ label, children }: { label: string; childre
 }
 
 const InputArea = styled.div`
-    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: left;

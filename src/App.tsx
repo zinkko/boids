@@ -1,5 +1,5 @@
 import React, { ReactNode, useState } from 'react';
-import BoidSimulation from './BoidSimulation';
+import BoidSimulation, { SimulationConfig } from './BoidSimulation';
 import Controls from './controls/Controls';
 import './App.css';
 
@@ -25,10 +25,11 @@ function Panel({ children }: PanelProps) {
 
 const defaultConfig = {
   amountOfBoids: 80,
+  boidProperties: { size: 5 },
 }
 
 function App() {
-  const [config, setConfig] = useState(defaultConfig);
+  const [config, setConfig] = useState<SimulationConfig>(defaultConfig);
 
   return (
     <div className="App">

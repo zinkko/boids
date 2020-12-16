@@ -4,7 +4,7 @@ import World, { DrawingConfig } from './entities/World';
 import { randomColor, randomDirection, randomPosition } from './utils/random';
 
 export interface SimulationConfig extends DrawingConfig {
-    boidProperties?: BoidProperties;
+    boidProperties: BoidProperties;
     amountOfBoids: number;
 }
 
@@ -28,6 +28,7 @@ export default function BoidSimulation({ config }: { config: SimulationConfig })
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [world, _] = useState(createWorld(config));
 
+    world.changeBoidSize(config.boidProperties?.size || 5);
     // hack
     while (world.amountOfBoids() > config.amountOfBoids && config.amountOfBoids >= 0) {
         world.removeBoid();

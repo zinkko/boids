@@ -36,8 +36,14 @@
   background-color: ghostwhite;
   border-left: 2px solid black;
 
+  width: 100%;
+
   display: flex;
-  align-items: top;
-  justify-content: center;
-  padding-top: 32px;
+  flex-direction: column;
+  justify-content: top;
+}
+
+.DrawingOptions {
+  display: flex;
+  flex-direction: column;
 }

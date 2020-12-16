@@ -70,7 +70,9 @@ export default class World {
         const main = this.boids[0];
         const inVision = this.boidsWithinVision(main);
         ctx.beginPath();
-        ctx.strokeStyle = 'red';
+        ctx.strokeStyle = 'gold';
+        ctx.arc(main.pos.x, main.pos.y, main.visionRadius, 0, Math.PI * 2);
+        ctx.moveTo(main.pos.x + 5, main.pos.y);
         ctx.arc(main.pos.x, main.pos.y, 5, 0, Math.PI * 2);
         ctx.stroke();
 
@@ -160,6 +162,15 @@ export default class World {
     
         return [wall, d];
     };
+
+    public changeBoidSize(size: number) {
+        if (size < 1 || 0.5*this.height < size) {
+            return;
+        }
+        this.boids.forEach(b => {
+            b.size = size;
+        });
+    }
 };
 
 export interface DrawingConfig {
