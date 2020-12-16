@@ -1,13 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
-import World from './entities/World';
+import { BoidProperties } from './entities/Boid';
+import World, { DrawingConfig } from './entities/World';
 import { randomColor, randomDirection, randomPosition } from './utils/random';
 
-const createWorld = (): World => {
+export interface SimulationConfig extends DrawingConfig {
+    boidProperties?: BoidProperties;
+    amountOfBoids: number;
+}
+
+const createWorld = (config: SimulationConfig): World => {
     const world = new World(800, 400);
-    const n = 80;
+    const n = config.amountOfBoids;
     const pad = 20;
     for (let i=0; i < n; i++) {
         world.addBoid({
+            ...(config.boidProperties|| {}),
             pos: randomPosition({ maxX: world.width - pad, minX: pad, maxY: world.height - pad, minY: pad }),
             color: randomColor(240, 'lightness', { minLightness: 20, maxLightness: 70 }),
             direction: randomDirection(),
@@ -19,7 +26,7 @@ const createWorld = (): World => {
 export default function BoidSimulation() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [world, _] = useState(createWorld());
+    const [world, _] = useState(createWorld({ amountOfBoids: 80 }));
 
     useEffect(() => {
         const play = (ctx: CanvasRenderingContext2D) => {
@@ -28,7 +35,7 @@ export default function BoidSimulation() {
                 const deltaT = timestamp - lastTick;
                 lastTick = timestamp;
                 world.simulateWorld(deltaT);
-                world.draw(ctx, lastTick);
+                world.draw(ctx, {});
                 requestAnimationFrame(renderLoop);
             };
             renderLoop(lastTick);

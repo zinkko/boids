@@ -46,7 +46,7 @@ export default class World {
         boid.pos.y = Math.min(Math.max(boid.pos.y, 0), this.height);
     }
 
-    public hilightFoo = (ctx: CanvasRenderingContext2D, boid: Boid) => {
+    public hilightGroup = (ctx: CanvasRenderingContext2D, boid: Boid) => {
         ctx.beginPath();
         ctx.fillStyle = 'aliceblue';
         ctx.moveTo(boid.pos.x+boid.visionRadius/2, boid.pos.y);
@@ -112,23 +112,27 @@ export default class World {
         ctx.stroke();
     }
 
-    public draw = (ctx: CanvasRenderingContext2D, deltaT: number) => {
+    public draw = (ctx: CanvasRenderingContext2D, config: DrawingConfig) => {
         ctx.clearRect(0, 0, this.width, this.height);
         ctx.fillStyle = 'white';
         ctx.fillRect(0, 0, this.width, this.height);
         ctx.fillStyle = 'black';
 
-        // this.boids.forEach(boid => {
-        //     this.hilightFoo(ctx, boid);
-        // });
+        if (config.showGroup) {
+            this.boids.forEach(boid => {
+                this.hilightGroup(ctx, boid);
+            });
+        }
         this.boids.forEach(boid => {
             boid.draw(ctx);
         });
         
-        // this.hilightNearestWall(ctx);
-        // this.hilightVision(ctx);
-        // this.hilightBoidCenterOfMass(ctx);
-        // this.hilightAngles(ctx);
+        if (config.showVision) {
+            this.hilightVision(ctx);
+        }
+        if (config.showCenterOfMass) {
+            this.hilightBoidCenterOfMass(ctx);
+        }
     };
 
     public nearestWall = (boid: Boid): [Wall, number] => {
@@ -148,6 +152,12 @@ export default class World {
         return [wall, d];
     };
 };
+
+export interface DrawingConfig {
+    showGroup?: boolean;
+    showCenterOfMass?: boolean;
+    showVision?: boolean;
+}
 
 // walls
 
