@@ -3,6 +3,7 @@ import { BoidProperties } from "../entities/Boid";
 import InputField from "./InputField";
 import Slider from "./Slider";
 import DrawingOptions from './DrawingOptions'
+import styled from 'styled-components';
 
 export interface ControlProps {
     values: SimulationConfig;
@@ -20,6 +21,7 @@ export default function Controls({ values, setValues }: ControlProps) {
     }
     return (
         <div className="Controls">
+            <Title>Settings</Title>
             <InputField label="Amount of Boids">
                 <Slider
                     value={values.amountOfBoids}
@@ -43,4 +45,8 @@ export default function Controls({ values, setValues }: ControlProps) {
         </div>
     );
 }
+
+const Title = styled.h2`
+    color: #343434;
+`
 
