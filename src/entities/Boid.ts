@@ -1,5 +1,5 @@
 
-import { Point, pointOnCircle, DirectionVector, angleBetween, mod, centerOfMass, averageOfDirections, distance } from './geometry';
+import { Point, pointOnCircle, DirectionVector, angleBetween, mod, centerOfMass, averageOfDirections, distance2 } from './geometry';
 import World, { walls } from './World';
 
 export interface BoidProperties {
@@ -71,17 +71,17 @@ export default class Boid {
 
     private separate(otherBoids: Boid[]): DirectionVector | null {
         const others = otherBoids.filter(b => {
-            return distance(b.pos, this.pos) < this.crowdingDistance;
+            return distance2(b.pos, this.pos) < this.crowdingDistance*this.crowdingDistance;
         });
         if (others.length === 0) {
             return null;
         }
         let closest = others[0];
-        let d = this.world.width * 10;
+        let d2 = this.world.width * 10;
         others.forEach(b => {
-            const nd = distance(this.pos, b.pos)
-            if (nd < d) {
-                d = nd;
+            const nd = distance2(this.pos, b.pos)
+            if (nd < d2) {
+                d2 = nd;
                 closest = b;
             }
         });

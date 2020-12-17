@@ -24,7 +24,7 @@ function Panel({ children }: PanelProps) {
 }
 
 const defaultConfig = {
-  amountOfBoids: 80,
+  amountOfBoids: 220,
   boidProperties: { size: 5 },
 }
 

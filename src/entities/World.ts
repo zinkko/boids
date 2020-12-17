@@ -1,4 +1,4 @@
-import { distance, DirectionVector, mod, centerOfMass } from './geometry';
+import { distance2, DirectionVector, mod, centerOfMass } from './geometry';
 import Boid, { BoidProperties } from './Boid';
 import { SimulationConfig } from '../BoidSimulation';
 
@@ -30,7 +30,7 @@ export default class World {
             if (b === boid) {
                 return false;
             }
-            return distance(boid.pos, b.pos) <= boid.visionRadius;
+            return distance2(boid.pos, b.pos) <= boid.visionRadius*boid.visionRadius;
         });
     }
 

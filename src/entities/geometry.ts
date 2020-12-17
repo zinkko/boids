@@ -54,10 +54,16 @@ export const mod = (a: number, m: number) => {
     return ((a % m) + m) % m;
 }
 
-export const distance = (p1: Point, p2: Point) => {
+const distance = (p1: Point, p2: Point) => {
     const dx = Math.abs(p1.x - p2.x);
     const dy = Math.abs(p1.y - p2.y);
     return Math.hypot(dx, dy);
+}
+
+export const distance2 = (p1: Point, p2: Point) => {
+    const dx = p1.x - p2.x;
+    const dy = p1.y - p2.y;
+    return dx*dx + dy*dy;
 }
 
 export const centerOfMass = (points: Point[]): Point => ({
