@@ -37,14 +37,15 @@ export default class Boid {
         this.color = properties?.color || 'black';
     }
     public ai() {
+        const boidsWithinVision = this.world.boidsWithinVision(this);
         const targets: DirectionVector[] = [];
-        const addTarget = (tgtF: () => DirectionVector | null, weight: number) => {
-            const tgt = tgtF();
+        const addTarget = (tgtF: (boids: Boid[]) => DirectionVector | null, weight: number) => {
+            const tgt = tgtF(boidsWithinVision);
             if (tgt) {
                 for (let i=0; i<weight; i++) targets.push(tgt);
             }
         }
-        if (this.world.boidsWithinVision(this).length > 0) {
+        if (boidsWithinVision.length > 0) {
             // boid actions
             addTarget(this.separate.bind(this), 2);
             addTarget(this.align.bind(this), 1);
@@ -68,8 +69,8 @@ export default class Boid {
         return this.direction;
     }
 
-    private separate(): DirectionVector | null {
-        const others = this.world.boidsWithinVision(this).filter(b => {
+    private separate(otherBoids: Boid[]): DirectionVector | null {
+        const others = otherBoids.filter(b => {
             return distance(b.pos, this.pos) < this.crowdingDistance;
         });
         if (others.length === 0) {
@@ -90,13 +91,13 @@ export default class Boid {
         );
     }
 
-    private align(): DirectionVector {
-        const boids = [this, ...this.world.boidsWithinVision(this)]
+    private align(otherBoids: Boid[]): DirectionVector {
+        const boids = [this, ...otherBoids]
         return averageOfDirections(boids.map(b => b.direction));
     }
 
-    private cohere(): DirectionVector {
-        const boids = [this, ...this.world.boidsWithinVision(this)];
+    private cohere(otherBoids: Boid[]): DirectionVector {
+        const boids = [this, ...otherBoids];
         const com = centerOfMass(boids.map(b => b.pos));
 
         return new DirectionVector(com.x - this.pos.x, com.y - this.pos.y);
