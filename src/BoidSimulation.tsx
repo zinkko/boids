@@ -34,7 +34,12 @@ export default function BoidSimulation({ config }: { config: SimulationConfig })
         world.removeBoid();
     }
     while (world.amountOfBoids() < config.amountOfBoids) {
-        world.addBoid(config.boidProperties || {});
+        world.addBoid({
+            ...(config.boidProperties|| {}),
+            pos: randomPosition({ maxX: world.width - 20, minX: 20, maxY: world.height - 20, minY: 20 }),
+            color: randomColor(240, 'lightness', { minLightness: 20, maxLightness: 70 }),
+            direction: randomDirection(),
+        });
     }
 
     useEffect(() => {

@@ -24,12 +24,16 @@ export default function Controls({ values, setValues }: ControlProps) {
             <Title>Settings</Title>
             <InputField label="Amount of Boids">
                 <Slider
+                    minValue={1}
+                    maxValue={250}
                     value={values.amountOfBoids}
                     setValue={newvalue => update('amountOfBoids', newvalue)}
                 />
             </InputField>
             <InputField label="Boid Size">
                 <Slider
+                    minValue={1}
+                    maxValue={30}
                     unit="px"
                     value={values.boidProperties?.size || 5}
                     setValue={newvalue => update('size', newvalue)}
