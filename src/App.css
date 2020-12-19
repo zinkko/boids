@@ -47,6 +47,8 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: top;
+
+  overflow-y: scroll;
 }
 
 .DrawingOptions {
