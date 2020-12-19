@@ -51,6 +51,7 @@ export default function Controls({ values, setValues }: ControlProps) {
 }
 
 const Title = styled.h2`
+    padding: 0 16px;
     color: #343434;
 `
 

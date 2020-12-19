@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import BoidSimulation, { SimulationConfig } from './BoidSimulation';
 import Controls from './controls/Controls';
 import './App.css';
@@ -30,6 +30,16 @@ const defaultConfig = {
 
 function App() {
   const [config, setConfig] = useState<SimulationConfig>(defaultConfig);
+
+  useEffect(() => {
+    const f = () => {
+      setConfig({ ...config, windowWidth: window.innerWidth, windowHeight: window.innerHeight });
+    };
+    window.onresize = f;
+    return () => {
+      window.removeEventListener('resize', f)
+    }
+  }, []);
 
   return (
     <div className="App">

@@ -91,8 +91,8 @@ export default class World {
         }
         const wall = this.nearestWall(this.boids[0])[0];
         const begin = (wall === 'north' || wall === 'west')
-        ? { x: 0, y: 0 }
-        : { x: this.width, y: this.height };
+            ? { x: 0, y: 0 }
+            : { x: this.width, y: this.height };
         const end = (wall === 'west' || wall === 'east')
             ? { x: begin.x, y: this.height - begin.y } // vertical
             : { x: this.width - begin.x, y: begin.y };
