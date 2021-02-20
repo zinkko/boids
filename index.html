@@ -21,57 +21,55 @@
             </div>
             <!-------------------------->
 
-            <!------------------------------------------------------------------
-            <div className="Controls">
+            <div class="controls">
                 <h3>Settings</h3>
-                <div classname="input-field">
-                    <div classname="Label">Amount of Boids</div>
+                <div class="input-field">
+                    <div class="label">Amount of Boids</div>
                     <input
+                        id="boid-amount-slider"
                         type="range"
                         min="1"
                         max="250"
-                        value="values.amountOfBoids"
                     />
                 </div>
-                <div classname="input-field">
-                    <div classname="Label">Boid Size</div>
+                <div class="input-field">
+                    <div class="label">Boid Size</div>
                     <input
+                        id="boid-size-slider"
                         type="range"
                         min="1"
                         max="30"
                         unit="px"
-                        value="values.boidProperties?.size || 5"
                     />
                 </div>
 
-                <div classname="input-field">
-                    <div classname="Label">Drawing Options</div>
-                    <div className="DrawingOptions">
+                <div class="input-field">
+                    <div class="label">Drawing Options</div>
+                    <div class="drawing-options">
                         <div>
                             <input
+                                id="show-center-of-mass"
                                 type="checkbox"
-                                onClick="() => console.error('not implemented')"
                             />
                             &nbsp;show center of mass
                         </div>
                         <div>
                             <input
+                                id="show-vision-of-boids"
                                 type="checkbox"
-                                onClick="() => console.error('not implemented')"
                             />
                             &nbsp;show vision of boids
                         </div>
                         <div>
                             <input
+                                id="show-groups"
                                 type="checkbox"
-                                onClick="() => console.error('not implemented')"
                             />
                             &nbsp;show groups
                         </div>
                     </div>
                 </div>
             </div>
-            ------------------------------------------------------------------->
         </div>
     </div>
     <script src="dist/bundle.js"></script>

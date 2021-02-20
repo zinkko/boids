@@ -53,10 +53,12 @@ body {
   background-color: ghostwhite;
 
   width: 100%;
+  min-width: 200px;
 
   display: flex;
   flex-direction: column;
-  justify-content: top;
+  justify-content: start;
+  padding: 0 8px;
 
   overflow-y: scroll;
 }
