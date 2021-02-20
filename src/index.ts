@@ -11,7 +11,7 @@ interface SimulationConfig extends DrawingConfig {
 
 
 const createWorld = (config: SimulationConfig) => {
-    const world = new World(800, 400);
+    const world = new World(config.windowWidth, config.windowHeight);
     const n = config.amountOfBoids;
     const pad = 20;
     for (let i=0; i < n; i++) {
@@ -26,16 +26,22 @@ const createWorld = (config: SimulationConfig) => {
 }
 const config: SimulationConfig = {
     amountOfBoids: 80,
-    boidProperties: {},
-    windowWidth: 600,
-    windowHeight: 800
+    boidProperties: {
+
+    },
+    windowWidth: 800,
+    windowHeight: 450,
 };
 const world = createWorld(config);
-const canvasRef = document.getElementById("world") as HTMLCanvasElement;
+const canvasRef = document.getElementById('world') as HTMLCanvasElement;
+if (!canvasRef) {
+    console.warn('Could not find the canvas!');
+}
 let animationFrame = 0;
 const play = () => {
     const ctx = canvasRef?.getContext('2d');
     if (!ctx) {
+        console.warn('Failed to get context');
         return;
     }
     let lastTick = performance.now();
@@ -49,4 +55,4 @@ const play = () => {
     renderLoop(lastTick);
 }
 
-   // play();
+play();

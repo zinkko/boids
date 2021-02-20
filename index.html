@@ -59,6 +59,11 @@
         display: flex;
         flex-direction: column;
         }
+
+        #world {
+            width: 800px;
+            height: 450px;
+        }
     </style>
 
     <!-- <script src="build/entities/geometry.js"></script> -->
@@ -73,7 +78,7 @@
         <div className="Panel">
             <!------- The beef --------->
             <div className="Simulation">
-                <canvas id="world" />
+                <canvas id="world" width="800" height="450"></canvas>
             </div>
             <!-------------------------->
 
@@ -130,5 +135,6 @@
             ------------------------------------------------------------------->
         </div>
     </div>
+    <script src="dist/bundle.js"></script>
 </body>
 </html>
