@@ -24,22 +24,22 @@ const createWorld = (config: SimulationConfig) => {
     }
     return world;
 }
+const canvas = document.getElementById('world') as HTMLCanvasElement;
 const config: SimulationConfig = {
     amountOfBoids: 80,
     boidProperties: {
 
     },
-    windowWidth: 800,
-    windowHeight: 450,
+    windowWidth: canvas.offsetWidth,
+    windowHeight: canvas.offsetHeight,
 };
 const world = createWorld(config);
-const canvasRef = document.getElementById('world') as HTMLCanvasElement;
-if (!canvasRef) {
+if (!canvas) {
     console.warn('Could not find the canvas!');
 }
 let animationFrame = 0;
 const play = () => {
-    const ctx = canvasRef?.getContext('2d');
+    const ctx = canvas?.getContext('2d');
     if (!ctx) {
         console.warn('Failed to get context');
         return;
@@ -54,5 +54,10 @@ const play = () => {
     };
     renderLoop(lastTick);
 }
+
+window.onload = window.onresize = () => {
+    world.width = canvas.width = canvas.offsetWidth;
+    world.height = canvas.height = canvas.offsetHeight;
+};
 
 play();

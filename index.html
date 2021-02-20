@@ -3,83 +3,20 @@
     <meta charset="utf-8" />
     <title>Boids</title>
     <link rel="icon" type="image/png" sizes="64x64" href="public/boidicon.png">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
-
-        body {
-        background-color: ghostwhite;
-        }
-
-        .App {
-        margin: 0 16px;
-        font-family: 'Quicksand', sans-serif;
-        display: flex;
-        flex-direction: column;
-
-        height: 100vh;
-        }
-
-        .Header {
-        display: flex;
-        align-items: center;
-        height: 64px;
-        border-bottom: solid 3px blue;
-        box-sizing: border-box;
-        }
-
-        .Panel {
-        display: grid;
-        grid-template-columns: 3fr 1fr;
-        grid-template-rows: calc(99vh - 64px);
-        box-sizing: border-box;
-
-        flex: 1;
-        }
-
-        .Simulation {
-        grid-row: 1;
-        grid-column: 1;
-        position: relative;
-        background-color: ghostwhite;
-        }
-
-        .Controls {
-        grid-row: 1;
-        grid-column: 2;
-        background-color: ghostwhite;
-
-        width: 100%;
-
-        display: flex;
-        flex-direction: column;
-        justify-content: top;
-
-        overflow-y: scroll;
-        }
-
-        .DrawingOptions {
-        display: flex;
-        flex-direction: column;
-        }
-
-        #world {
-            width: 800px;
-            height: 450px;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="App.css"></style>
 
     <!-- <script src="build/entities/geometry.js"></script> -->
     <!-- <script src="build/entities/Boid.js"></script> -->
     <!-- <script src="build/entities/World.js"></script> -->
 </head>
 <body>
-    <div className="App">
-        <div className="Header">
-            <h1>Boid Simulation</h1>
+    <div class="app">
+        <div class="header">
+            Boid Simulation
         </div>
-        <div className="Panel">
+        <div class="panel">
             <!------- The beef --------->
-            <div className="Simulation">
+            <div class="simulation">
                 <canvas id="world" width="800" height="450"></canvas>
             </div>
             <!-------------------------->

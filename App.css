@@ -2,9 +2,12 @@
 
 body {
   background-color: ghostwhite;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
 }
 
-.App {
+.app {
   margin: 0 16px;
   font-family: 'Quicksand', sans-serif;
   display: flex;
@@ -13,31 +16,38 @@ body {
   height: 100vh;
 }
 
-.Header {
+.header {
   display: flex;
   align-items: center;
-  height: 64px;
+  text-align: center;
+  height: 48px;
+  padding-left: 8px;
+  font-size: 18pt;
   border-bottom: solid 3px blue;
   box-sizing: border-box;
 }
 
-.Panel {
+.panel {
   display: grid;
   grid-template-columns: 3fr 1fr;
-  grid-template-rows: calc(99vh - 64px);
+  grid-template-rows: calc(99vh - 48px);
   box-sizing: border-box;
 
+  height: calc(100% - 48px);
   flex: 1;
 }
 
-.Simulation {
+.simulation {
   grid-row: 1;
   grid-column: 1;
   position: relative;
   background-color: ghostwhite;
+
+  height: 100%;
+  width: 100%;
 }
 
-.Controls {
+.controls {
   grid-row: 1;
   grid-column: 2;
   background-color: ghostwhite;
@@ -51,7 +61,12 @@ body {
   overflow-y: scroll;
 }
 
-.DrawingOptions {
+.drawing-options {
   display: flex;
   flex-direction: column;
+}
+
+#world {
+  width: inherit;
+  height: inherit;
 }
