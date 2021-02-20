@@ -1,0 +1,181 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+        body {
+        background-color: ghostwhite;
+        }
+
+        .App {
+        margin: 0 16px;
+        font-family: 'Quicksand', sans-serif;
+        display: flex;
+        flex-direction: column;
+
+        height: 100vh;
+        }
+
+        .Header {
+        display: flex;
+        align-items: center;
+        height: 64px;
+        border-bottom: solid 3px blue;
+        box-sizing: border-box;
+        }
+
+        .Panel {
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+        grid-template-rows: calc(99vh - 64px);
+        box-sizing: border-box;
+
+        flex: 1;
+        }
+
+        .Simulation {
+        grid-row: 1;
+        grid-column: 1;
+        position: relative;
+        background-color: ghostwhite;
+        }
+
+        .Controls {
+        grid-row: 1;
+        grid-column: 2;
+        background-color: ghostwhite;
+
+        width: 100%;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: top;
+
+        overflow-y: scroll;
+        }
+
+        .DrawingOptions {
+        display: flex;
+        flex-direction: column;
+        }
+    </style>
+
+    <script src="build/entities/geometry.js"></script>
+    <script src="build/entities/Boid.js"></script>
+    <script src="build/entities/World.js"></script>
+</head>
+<body>
+    <div className="App">
+        <div className="Header">
+            <h1>Boid Simulation</h1>
+        </div>
+        <div className="Panel">
+            <!------- The beef --------->
+            <div className="Simulation">
+                <canvas id="world" />
+            </div>
+            <!-------------------------->
+
+            <!------------------------------------------------------------------
+            <div className="Controls">
+                <h3>Settings</h3>
+                <div classname="input-field">
+                    <div classname="Label">Amount of Boids</div>
+                    <input
+                        type="range"
+                        min="1"
+                        max="250"
+                        value="values.amountOfBoids"
+                    />
+                </div>
+                <div classname="input-field">
+                    <div classname="Label">Boid Size</div>
+                    <input
+                        type="range"
+                        min="1"
+                        max="30"
+                        unit="px"
+                        value="values.boidProperties?.size || 5"
+                    />
+                </div>
+
+                <div classname="input-field">
+                    <div classname="Label">Drawing Options</div>
+                    <div className="DrawingOptions">
+                        <div>
+                            <input
+                                type="checkbox"
+                                onClick="() => console.error('not implemented')"
+                            />
+                            &nbsp;show center of mass
+                        </div>
+                        <div>
+                            <input
+                                type="checkbox"
+                                onClick="() => console.error('not implemented')"
+                            />
+                            &nbsp;show vision of boids
+                        </div>
+                        <div>
+                            <input
+                                type="checkbox"
+                                onClick="() => console.error('not implemented')"
+                            />
+                            &nbsp;show groups
+                        </div>
+                    </div>
+                </div>
+            </div>
+            ------------------------------------------------------------------->
+        </div>
+    </div>
+</body>
+
+<script>
+    /*
+    export interface SimulationConfig extends DrawingConfig {
+        boidProperties: BoidProperties;
+        amountOfBoids: number;
+        windowWidth?: number;
+        windowHeight?: number;
+    }
+    */
+
+    const createWorld = (config) => {
+        const world = new World(800, 400);
+        const n = config.amountOfBoids;
+        const pad = 20;
+        for (let i=0; i < n; i++) {
+            world.addBoid({
+                ...(config.boidProperties|| {}),
+                pos: randomPosition({ maxX: world.width - pad, minX: pad, maxY: world.height - pad, minY: pad }),
+                color: randomColor(240, 'lightness', { minLightness: 20, maxLightness: 70 }),
+                direction: randomDirection(),
+            });
+        }
+        return world;
+    }
+
+    const world = createWorld({ amountOfBoids: 80, boidProperties: {} });
+    let animationFrame = 0;
+    play = () => {
+        const ctx = this.canvasRef?.current?.getContext('2d');
+        if (!ctx) {
+            return;
+        }
+        let lastTick = performance.now();
+        const renderLoop = timestamp => {
+            const deltaT = timestamp - lastTick;
+            lastTick = timestamp;
+            world.simulateWorld(deltaT);
+            world.draw(ctx, this.props.config);
+            animationFrame = requestAnimationFrame(renderLoop);
+        };
+        renderLoop(lastTick);
+    }
+
+    // play();
+</script>
+
+</html>

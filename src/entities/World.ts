@@ -1,6 +1,5 @@
 import { distance2, DirectionVector, mod, centerOfMass } from './geometry';
 import Boid, { BoidProperties } from './Boid';
-import { SimulationConfig } from '../BoidSimulation';
 
 export default class World {
     public width: number;
